@@ -13,4 +13,10 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+    <!--  We can create our own style too   -->
+    <!-- parent is basically the inheritance. Means, the parent we set is basically the inheritance we take -->
+    <style name="ToolbarTheme" parent="ThemeOverlay.MaterialComponents.ActionBar">
+        <item name="colorControlNormal">@color/toolbar_color_normal</item>
+
+    </style>
 </resources>
