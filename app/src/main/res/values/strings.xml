@@ -4,5 +4,6 @@
     <!--TODO(Step 3 - Defining the image content Description in string.xml)-->
     <!--START-->
     <string name="image">image</string>
+    <string name="getReady">Get Ready For</string>
     <!--END-->
 </resources>
