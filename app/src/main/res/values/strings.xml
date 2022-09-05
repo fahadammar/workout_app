@@ -5,5 +5,6 @@
     <!--START-->
     <string name="image">image</string>
     <string name="getReady">Get Ready For</string>
+    <string name="countFinishMsg">"Here now we will start the exercise."</string>
     <!--END-->
 </resources>

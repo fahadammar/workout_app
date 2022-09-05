@@ -13,6 +13,8 @@
         android:layout_height="?android:attr/actionBarSize"
         android:background="@color/white"
         android:theme="@style/ToolbarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:titleTextColor="@color/colorPrimary" />
 
@@ -50,10 +52,10 @@
             android:layout_height="100dp"
             android:layout_gravity="center"
             android:background="@drawable/circular_progress_gray"
+            android:progressDrawable="@drawable/circular_progress_bar"
             android:indeterminate="false"
             android:max="10"
             android:progress="100"
-            android:progressDrawable="@drawable/circular_progress_bar"
             android:rotation="-90" />
 
         <LinearLayout
@@ -63,7 +65,6 @@
             android:layout_gravity="center"
             android:background="@drawable/item_circular_color_accent_background"
             >
-
             <TextView
                 android:id="@+id/tvTimer"
                 android:layout_width="wrap_content"
