@@ -5,6 +5,7 @@
     <!--START-->
     <string name="image">image</string>
     <string name="getReady">Get Ready For</string>
-    <string name="countFinishMsg">"Here now we will start the exercise."</string>
+    <string name="countFinishMsg">Here now we will start the exercise.</string>
+    <string name="countFinishMsgEX">30 seconds are over, lets go to the rest view</string>
     <!--END-->
 </resources>
