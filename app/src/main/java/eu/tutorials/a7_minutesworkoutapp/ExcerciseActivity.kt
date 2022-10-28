@@ -11,7 +11,7 @@ import java.util.*
 class ExcerciseActivity : AppCompatActivity() {
 
     // BINDING VARIABLE
-    var excerciseBinding: ActivityExcerciseBinding? = null
+    var binding: ActivityExcerciseBinding? = null
 
     // COUNT DOWN VARIABLES
     private var restTimer : CountDownTimer? = null
@@ -24,11 +24,11 @@ class ExcerciseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // BINDING
-        excerciseBinding = ActivityExcerciseBinding.inflate(layoutInflater)
-        val view = excerciseBinding!!.root
+        binding = ActivityExcerciseBinding.inflate(layoutInflater)
+        val view = binding?.root
         setContentView(view)
 
-        setSupportActionBar(excerciseBinding!!.toolbar)
+        setSupportActionBar(binding?.toolbarExercise)
 
         // we can use this variable or we can use directly.
         val actionBar = supportActionBar // getSupportActionBar()
@@ -39,14 +39,14 @@ class ExcerciseActivity : AppCompatActivity() {
         }
 
         // In order to add the back button
-        excerciseBinding!!.toolbar.setNavigationOnClickListener {
+        binding?.toolbarExercise?.setNavigationOnClickListener {
             onBackPressed()
         }
 
-        setupProgressView()
+        setupRestView()
     }
 
-    private fun setupProgressView(){
+    private fun setupRestView(){
         /*
          * Here firstly we will check if the timer is running the
          * and it is not null then cancel the running timer and start the new one.
@@ -58,21 +58,21 @@ class ExcerciseActivity : AppCompatActivity() {
             restProgress = 0
         }
         // This function is which contains the count flow. It's used to set the progress details
-        setupRestView()
+        setRestProgressBar()
     }
 
     // THE COUNT DOWN TIMER FUNCTION - this is named as -->
-    private fun setupRestView(){
-        excerciseBinding!!.progressBar.progress = restProgress
+    private fun setRestProgressBar(){
+        binding?.progressBar?.progress = restProgress
         // Here we have started a timer of 10 seconds so the 10000 is milliseconds is 10 seconds and the countdown interval is 1 second so it 1000.
-        restTimer = object : CountDownTimer(1000, 1000){
+        restTimer = object : CountDownTimer(10000, 1000){
             override fun onTick(millisUntilFinished: Long) {
                 // Increasing by 1
                 restProgress++
                 // Indicates progress bar progress
-                excerciseBinding!!.progressBar.progress = 10 - restProgress
+                binding?.progressBar?.progress = 10 - restProgress
                 // The TextView Number in Between the Progress. It's basically the text in terms of seconds
-                excerciseBinding!!.tvTimer.text = (10 - restProgress).toString()
+                binding?.tvTimer?.text = (10 - restProgress).toString()
             }
             override fun onFinish() {
                 // When the 10 seconds will complete this will be executed.
@@ -82,13 +82,13 @@ class ExcerciseActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
-        }
+        }.start()
     }
 
     private fun setupExcerciseView(){
-        excerciseBinding?.progressBarExcercise?.visibility = View.INVISIBLE
-        excerciseBinding?.tvTitle?.text = "Excercise Name"
-        excerciseBinding?.flExcercise?.visibility = View.VISIBLE
+        binding?.flProgressBar?.visibility = View.INVISIBLE
+        binding?.tvTitle?.text = "Excercise Name"
+        //binding?.flExcercise?.visibility = View.VISIBLE
 
         if(excerciseTimer != null){
             excerciseTimer?.cancel()
@@ -100,32 +100,33 @@ class ExcerciseActivity : AppCompatActivity() {
 
     // THE COUNT DOWN TIMER FUNCTION - this is named as -->
     private fun setExcerciseProgressBar(){
-        excerciseBinding!!.progressBar.progress = restProgress
+        binding!!.progressBar.progress = restProgress
         // Here we have started a timer of 10 seconds so the 10000 is milliseconds is 10 seconds and the countdown interval is 1 second so it 1000.
-        restTimer = object : CountDownTimer(1000, 1000){
+        restTimer = object : CountDownTimer(30000, 1000){
             override fun onTick(millisUntilFinished: Long) {
                 // Increasing by 1
                 excerciseProgress++
                 // Indicates progress bar progress
-                excerciseBinding!!.progressBarExcercise.progress = 30 - excerciseProgress
+                //binding!!.progressBarExcercise.progress = 30 - excerciseProgress
                 // The TextView Number in Between the Progress. It's basically the text in terms of seconds
-                excerciseBinding!!.tvTimerExcercise.text = (30 - excerciseProgress).toString()
+                //binding!!.tvTimerExcercise.text = (30 - excerciseProgress).toString()
             }
             override fun onFinish() {
                 setupExcerciseView()
             }
-        }
+        }.start()
     }
 
-
     override fun onDestroy() {
-        super.onDestroy()
-        excerciseBinding = null
         if(restTimer != null)
         {
             restTimer?.cancel()
             restProgress = 0
         }
+
+        super.onDestroy()
+        binding = null
+
         if(excerciseTimer != null)
         {
             excerciseTimer?.cancel()

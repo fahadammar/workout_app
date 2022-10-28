@@ -9,15 +9,15 @@ import eu.tutorials.a7_minutesworkoutapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var binding : ActivityMainBinding
+    var binding : ActivityMainBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        val view = binding.root
+        val view = binding?.root
         setContentView(view)
 
-        binding.flStart.setOnClickListener {
+        binding?.flStart?.setOnClickListener {
             val intent = Intent(this, ExcerciseActivity::class.java)
             startActivity(intent)
 
@@ -27,5 +27,10 @@ class MainActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
     }
 }
