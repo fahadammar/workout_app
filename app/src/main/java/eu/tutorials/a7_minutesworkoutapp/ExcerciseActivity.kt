@@ -75,6 +75,8 @@ class ExcerciseActivity : AppCompatActivity() {
                 binding?.tvTimer?.text = (10 - restProgress).toString()
             }
             override fun onFinish() {
+                // HERE BELOW IS THE EXCERCISE VIEW - NOW THE EXCERCISE STUFF STARTS
+                setupExcerciseView()
                 // When the 10 seconds will complete this will be executed.
                 Toast.makeText(
                     this@ExcerciseActivity,
@@ -88,7 +90,7 @@ class ExcerciseActivity : AppCompatActivity() {
     private fun setupExcerciseView(){
         binding?.flProgressBar?.visibility = View.INVISIBLE
         binding?.tvTitle?.text = "Excercise Name"
-        //binding?.flExcercise?.visibility = View.VISIBLE
+        binding?.flExcercise?.visibility = View.VISIBLE
 
         if(excerciseTimer != null){
             excerciseTimer?.cancel()
@@ -107,9 +109,9 @@ class ExcerciseActivity : AppCompatActivity() {
                 // Increasing by 1
                 excerciseProgress++
                 // Indicates progress bar progress
-                //binding!!.progressBarExcercise.progress = 30 - excerciseProgress
+                binding!!.progressBarExcercise.progress = 30 - excerciseProgress
                 // The TextView Number in Between the Progress. It's basically the text in terms of seconds
-                //binding!!.tvTimerExcercise.text = (30 - excerciseProgress).toString()
+                binding!!.tvTimerExcercise.text = (30 - excerciseProgress).toString()
             }
             override fun onFinish() {
                 setupExcerciseView()
