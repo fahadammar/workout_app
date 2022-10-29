@@ -3,6 +3,7 @@ package eu.tutorials.a7_minutesworkoutapp
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -11,7 +12,7 @@ import eu.tutorials.a7_minutesworkoutapp.Model.ExcerciseModel
 import eu.tutorials.a7_minutesworkoutapp.databinding.ActivityExcerciseBinding
 import java.util.*
 
-class ExcerciseActivity : AppCompatActivity() {
+class ExcerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     val TAG = "excerciseActivityTAG"
 
@@ -32,6 +33,9 @@ class ExcerciseActivity : AppCompatActivity() {
     //  -1 as the list starting element is 0.)
     private var excerciseList: ArrayList<ExcerciseModel>? = null // We will initialize the list later.
     private var currentExercisePosition = -1 // Current Position of Exercise.
+
+    // Text To Speech
+    var textToSpeech : TextToSpeech? = null
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +61,8 @@ class ExcerciseActivity : AppCompatActivity() {
 
         excerciseList = Constants.defaultExerciseList()
 
+        textToSpeech = TextToSpeech(this, this)
+
         setupRestView()
     }
 
@@ -76,9 +82,8 @@ class ExcerciseActivity : AppCompatActivity() {
          * and it is not null then cancel the running timer and start the new one.
          * And set the progress to initial which is 0.
          */
-        if(restTimer != null)
-        {
-            restTimer!!.cancel()
+        if(restTimer != null) {
+            restTimer?.cancel()
             restProgress = 0
         }
 
@@ -114,7 +119,7 @@ class ExcerciseActivity : AppCompatActivity() {
     }
 
     private fun setupExcerciseView(){
-        // making the first timer invisible after it completes it time
+        // making the first timer invisible after it completes the time
         binding?.flRestView?.visibility = View.INVISIBLE
         binding?.tvTitle?.visibility = View.INVISIBLE
         binding?.tvUpcomingExerciseName?.visibility = View.INVISIBLE
@@ -126,9 +131,13 @@ class ExcerciseActivity : AppCompatActivity() {
 
 
         if(excerciseTimer != null){
+            Log.i(TAG, "setupExcerciseView: excerciseTimer is not equal to NULL --> $excerciseTimer")
             excerciseTimer?.cancel()
             excerciseProgress = 0
         }
+
+        // Speaking the current excercise name
+        speakText(excerciseList!![currentExercisePosition].getName())
 
         // Setting up the current exercise name and image to view to the UI element.
         // START
@@ -145,14 +154,15 @@ class ExcerciseActivity : AppCompatActivity() {
     private fun setExcerciseProgressBar(){
         binding!!.progressBar.progress = excerciseProgress
         // Here we have started a timer of 10 seconds so the 10000 is milliseconds is 10 seconds and the countdown interval is 1 second so it 1000.
-        restTimer = object : CountDownTimer(exerciseTimerDuration * 1000, 1000){
+        excerciseTimer = object : CountDownTimer(exerciseTimerDuration * 1000, 1000){
             override fun onTick(millisUntilFinished: Long) {
                 // Increasing by 1
                 excerciseProgress++
                 // Indicates progress bar progress
-                binding!!.progressBarExcercise.progress = exerciseTimerDuration.toInt() - excerciseProgress
+                binding?.progressBarExcercise?.progress = exerciseTimerDuration.toInt() - excerciseProgress
+                Log.i(TAG, "onTick: ExcerCiseTimerDuration --> $exerciseTimerDuration \n ExcerCise Progress --> $excerciseProgress")
                 // The TextView Number in Between the Progress. It's basically the text in terms of seconds
-                binding!!.tvTimerExcercise.text = (exerciseTimerDuration.toInt() - excerciseProgress).toString()
+                binding?.tvTimerExcercise?.text = (exerciseTimerDuration.toInt() - excerciseProgress).toString()
             }
             override fun onFinish() {
                 // Updating the view after completing the 30 seconds exercise.
@@ -162,11 +172,7 @@ class ExcerciseActivity : AppCompatActivity() {
                     setupRestView()
                 }
                 else {
-                    Toast.makeText(
-                        this@ExcerciseActivity,
-                        R.string.congratsMSG,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    showToast(R.string.congratsMSG.toString(), false)
                 }
             }
         }.start()
@@ -178,21 +184,40 @@ class ExcerciseActivity : AppCompatActivity() {
         Log.i(TAG, "logFunction: *** excerciseList-size = ${excerciseList?.size!!} ***")
     }
 
+    override fun onInit(status: Int) {
+        if(status != TextToSpeech.ERROR){
+            val isLanAvailable = textToSpeech?.setLanguage(Locale.UK)
+            if(isLanAvailable == TextToSpeech.LANG_NOT_SUPPORTED || isLanAvailable == TextToSpeech.LANG_MISSING_DATA){
+                showToast(R.string.langNotAvailable.toString(), false)
+            }
+        }
+    }
+
+    private fun speakText(text : String){
+        textToSpeech?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "")
+    }
+
+    private fun showToast(toastMsg : String, toastLengthLong : Boolean){
+        if (toastLengthLong){
+            Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onDestroy() {
-        if(restTimer != null)
-        {
+        if(restTimer != null) {
             restTimer?.cancel()
             restProgress = 0
         }
 
+        if(textToSpeech != null){
+            textToSpeech?.stop()
+            textToSpeech?.shutdown()
+        }
+
         super.onDestroy()
         binding = null
-
-        if(excerciseTimer != null)
-        {
-            excerciseTimer?.cancel()
-            excerciseProgress = 0
-        }
     }
 }
 

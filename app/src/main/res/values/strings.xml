@@ -8,5 +8,6 @@
     <string name="countFinishMsg">Here now we will start the exercise.</string>
     <string name="countFinishMsgEX">30 seconds are over, lets go to the rest view</string>
     <string name="congratsMSG">Congratulations! You have completed the 7 minutes workout.</string>
+    <string name="langNotAvailable">The Language specified is not supported!</string>
     <!--END-->
 </resources>
