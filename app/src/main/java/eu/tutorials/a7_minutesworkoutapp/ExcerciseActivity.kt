@@ -64,10 +64,13 @@ class ExcerciseActivity : AppCompatActivity() {
         // We are making the first timer visible
         binding?.flRestView?.visibility = View.VISIBLE
         binding?.tvTitle?.visibility = View.VISIBLE
+        binding?.tvUpcomingExerciseName?.visibility = View.VISIBLE
+        binding?.upcomingLabel?.visibility = View.VISIBLE
         // We are making the below stuff invisible - it will appear after the first timer completes
         binding?.tvExerciseName?.visibility = View.INVISIBLE
         binding?.flExerciseView?.visibility = View.INVISIBLE
         binding?.ivImage?.visibility = View.INVISIBLE
+
         /*
          * Here firstly we will check if the timer is running the
          * and it is not null then cancel the running timer and start the new one.
@@ -78,6 +81,10 @@ class ExcerciseActivity : AppCompatActivity() {
             restTimer!!.cancel()
             restProgress = 0
         }
+
+        // Here we will get the next excercise position
+        binding?.tvUpcomingExerciseName?.text =excerciseList!![currentExercisePosition + 1].getName()
+
         // This function is which contains the count flow. It's used to set the progress details
         setRestProgressBar()
     }
@@ -110,10 +117,13 @@ class ExcerciseActivity : AppCompatActivity() {
         // making the first timer invisible after it completes it time
         binding?.flRestView?.visibility = View.INVISIBLE
         binding?.tvTitle?.visibility = View.INVISIBLE
+        binding?.tvUpcomingExerciseName?.visibility = View.INVISIBLE
+        binding?.upcomingLabel?.visibility = View.INVISIBLE
         // making the second timer and image's visible
         binding?.tvExerciseName?.visibility = View.VISIBLE
         binding?.flExerciseView?.visibility = View.VISIBLE
         binding?.ivImage?.visibility = View.VISIBLE
+
 
         if(excerciseTimer != null){
             excerciseTimer?.cancel()
