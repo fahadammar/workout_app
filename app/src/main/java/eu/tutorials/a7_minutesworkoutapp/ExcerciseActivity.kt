@@ -1,5 +1,6 @@
 package eu.tutorials.a7_minutesworkoutapp
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -7,6 +8,8 @@ import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import eu.tutorials.a7_minutesworkoutapp.Adapters.ExcerciseStatusAdapter
 import eu.tutorials.a7_minutesworkoutapp.Constants.Constants
 import eu.tutorials.a7_minutesworkoutapp.Model.ExcerciseModel
 import eu.tutorials.a7_minutesworkoutapp.databinding.ActivityExcerciseBinding
@@ -36,6 +39,8 @@ class ExcerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     // Text To Speech
     var textToSpeech : TextToSpeech? = null
+
+    private var excerciseAdapter: ExcerciseStatusAdapter? = null
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +69,7 @@ class ExcerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         textToSpeech = TextToSpeech(this, this)
 
         setupRestView()
+        setupExerciseStatusRecyclerView()
     }
 
     private fun setupRestView(){
@@ -110,8 +116,13 @@ class ExcerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 binding?.tvTimer?.text = (10 - restProgress).toString()
             }
             override fun onFinish() {
+                Log.d(TAG, "onFinish: setRestProgressBar Finish Function is called")
                 // Increasing the current position of the exercise after rest view.
                 currentExercisePosition++
+                Log.d(TAG, "onFinish: Current Position $currentExercisePosition")
+                // NOW WE NEED TO SET THE IS_SELECTED TO TRUE AND NOTIFY DATA ADAPTER (ADAPTER IS RELATED TO RECYCLER VIEW)
+                excerciseList!![currentExercisePosition].setIsSelected(true)
+                excerciseAdapter!!.notifyDataSetChanged()
                 // HERE BELOW IS THE EXCERCISE VIEW - NOW THE EXCERCISE STUFF STARTS
                 setupExcerciseView()
             }
@@ -150,7 +161,7 @@ class ExcerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         setExcerciseProgressBar()
     }
 
-    // THE COUNT DOWN TIMER FUNCTION - this is named as -->
+    // THE COUNT DOWN TIMER FUNCTION
     private fun setExcerciseProgressBar(){
         binding!!.progressBar.progress = excerciseProgress
         // Here we have started a timer of 10 seconds so the 10000 is milliseconds is 10 seconds and the countdown interval is 1 second so it 1000.
@@ -165,6 +176,12 @@ class ExcerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 binding?.tvTimerExcercise?.text = (exerciseTimerDuration.toInt() - excerciseProgress).toString()
             }
             override fun onFinish() {
+                // We have changed the status of the selected item and updated the status of that,
+                // so that the position is set as completed in the exercise list.)
+                excerciseList!![currentExercisePosition].setIsSelected(false) // exercise is completed so selection is set to false
+                excerciseList!![currentExercisePosition].setIsCompleted(true) // updating in the list that this exercise is completed
+                excerciseAdapter!!.notifyDataSetChanged() // Notifying the adapter class.
+
                 // Updating the view after completing the 30 seconds exercise.
                 if(currentExercisePosition < excerciseList?.size!! - 1) {
                     logFunction()
@@ -172,7 +189,10 @@ class ExcerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     setupRestView()
                 }
                 else {
-                    showToast(R.string.congratsMSG.toString(), false)
+                    finish()
+                    val intent = Intent(this@ExcerciseActivity,FinishActivity::class.java)
+                    startActivity(intent)
+                    //showToast(R.string.congratsMSG.toString(), false)
                 }
             }
         }.start()
@@ -195,6 +215,16 @@ class ExcerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private fun speakText(text : String){
         textToSpeech?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "")
+    }
+
+    private fun setupExerciseStatusRecyclerView() {
+        // THE BELOW IS THE LAYOUT OF THE RECYCLER VIEW
+        binding?.rvExerciseStatus?.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        // CREATING INSTANCE OF THE CLASS
+        excerciseAdapter = ExcerciseStatusAdapter(excerciseList!!)
+        // THE ADAPTER OF THE RECYCLER VIEW
+        binding?.rvExerciseStatus?.adapter = excerciseAdapter
     }
 
     private fun showToast(toastMsg : String, toastLengthLong : Boolean){

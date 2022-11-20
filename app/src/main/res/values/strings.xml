@@ -9,5 +9,7 @@
     <string name="countFinishMsgEX">30 seconds are over, lets go to the rest view</string>
     <string name="congratsMSG">Congratulations! You have completed the 7 minutes workout.</string>
     <string name="langNotAvailable">The Language specified is not supported!</string>
+    <string name="calculation">Calculator</string>
+    <string name="calculateBMI">CALCULATE BMI</string>
     <!--END-->
 </resources>
